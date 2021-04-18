@@ -3,6 +3,8 @@ import pandas as pd
 import time
 import sqlite3
 
+print("请输入待推荐用户编号:")
+speed_user = int(input());
 
 data_home = './'
 
@@ -115,13 +117,19 @@ uTest_recommended_items = compute_estimated_matrix(urm, U, S, Vt, uTest, K, True
 
 
 def speed():
-    for user in uTest:
-        print("当前待推荐用户编号 {}". format(user))
-        rank_value = 1
-        for i in uTest_recommended_items[user,0:10]:
-            song_details = small_set[small_set.so_index_value == i].drop_duplicates('so_index_value')[['title','artist_name']]
-            print("推荐编号： {} 推荐歌曲： {} 作者： {}".format(rank_value, list(song_details['title'])[0],list(song_details['artist_name'])[0]))
-            rank_value+=1
+    print("当前待推荐用户编号 {}".format(speed_user))
+    rank_value = 1
+    for i in uTest_recommended_items[speed_user, 0:10]:
+        song_details = small_set[small_set.so_index_value == i].drop_duplicates('so_index_value')[['title', 'artist_name']]
+        print("推荐编号: {} 推荐歌曲: {} 作者: {}".format(rank_value, list(song_details['title'])[0], list(song_details['artist_name'])[0]))
+        rank_value += 1
+   # for user in uTest:
+    #    print("当前待推荐用户编号 {}". format(user))
+     #   rank_value = 1
+      #  for i in uTest_recommended_items[user,0:10]:
+       #     song_details = small_set[small_set.so_index_value == i].drop_duplicates('so_index_value')[['title','artist_name']]
+        #    print("推荐编号： {} 推荐歌曲： {} 作者： {}".format(rank_value, list(song_details['title'])[0],list(song_details['artist_name'])[0]))
+         #   rank_value+=1
 
 from concurrent.futures import ThreadPoolExecutor
 
