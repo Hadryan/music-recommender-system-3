@@ -8,7 +8,7 @@ speed_user = int(input());
 
 data_home = './'
 
-triplet_dataset = pd.read_csv(filepath_or_buffer = data_home + 'train_triplets.txt', sep = '\t', header = None, names = ['user', 'song', 'play_count'], nrows = 100000)
+triplet_dataset = pd.read_csv(filepath_or_buffer = data_home + 'train_triplets.txt', sep = '\t', header = None, names = ['user', 'song', 'play_count'], nrows = 200000)
 
 
 conn = sqlite3.connect(data_home + 'track_metadata.db')
@@ -119,7 +119,7 @@ uTest_recommended_items = compute_estimated_matrix(urm, U, S, Vt, uTest, K, True
 def speed():
     print("当前待推荐用户编号 {}".format(speed_user))
     rank_value = 1
-    for i in uTest_recommended_items[speed_user, 0:10]:
+    for i in uTest_recommended_items[speed_user, 0:100]:
         song_details = small_set[small_set.so_index_value == i].drop_duplicates('so_index_value')[['title', 'artist_name']]
         print("推荐编号: {} 推荐歌曲: {} 作者: {}".format(rank_value, list(song_details['title'])[0], list(song_details['artist_name'])[0]))
         rank_value += 1
