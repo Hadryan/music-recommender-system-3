@@ -10,6 +10,8 @@ scipy = "*"
 flask = "*"
 flask-cors = "*"
 python-dotenv = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
 
 [dev-packages]
 
