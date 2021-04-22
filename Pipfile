@@ -12,6 +12,7 @@ flask-cors = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+httpie = "*"
 
 [dev-packages]
 
