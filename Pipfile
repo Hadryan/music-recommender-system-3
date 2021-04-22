@@ -13,6 +13,7 @@ python-dotenv = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 httpie = "*"
+flask-httpauth = "*"
 
 [dev-packages]
 
