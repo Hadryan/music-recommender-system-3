@@ -131,11 +131,10 @@ def speed(id):
             }
             res.append(test)
         rank_value += 1
-    print(res)
     return res
 
 
 @bp.route('/music/<int:id>', methods=['GET'])
 def test(id):
-    return jsonify('music'+id)
-# speed()
+    res = speed(int(id))
+    return jsonify(res)
