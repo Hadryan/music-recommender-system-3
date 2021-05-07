@@ -1,9 +1,12 @@
 import base64
 from datetime import datetime, timedelta
 import os
+import jwt
+import json
+from time import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
-from flask import url_for
+from flask import url_for, current_app
 
 class PaginatedAPIMixin(object):
     @staticmethod
@@ -60,15 +63,14 @@ class User(PaginatedAPIMixin, db.Model):
         now = datetime.utcnow()
         payload = {
             'user_id': self.id,
-            'name': self.name if self.name else self.username,
+            'user_name': self.username,
             'exp': now + timedelta(seconds=expires_in),
             'iat': now
         }
         return jwt.encode(
             payload,
             current_app.config['SECRET_KEY'],
-            algorithm='HS256'
-        ).decode('utf-8')
+            algorithm='HS256').encode('utf-8').decode('utf-8')
 
     @staticmethod
     def verify_jwt(token):
@@ -76,7 +78,7 @@ class User(PaginatedAPIMixin, db.Model):
             payload = jwt.decode(
                 token,
                 current_app.config['SECRET_KEY'],
-                algorithm=['HS256']
+                algorithms=['HS256']
             )
         except (jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidSignatureError) as e:
             return None

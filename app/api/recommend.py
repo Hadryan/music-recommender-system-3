@@ -5,20 +5,14 @@ import sqlite3
 from flask import jsonify
 from app.api import bp
 
-
-# print("请输入待推荐用户编号:")
-# speed_user = int(input());
-
 data_home = '/home/somnam/Documents/testGit/app/api/'
 
-triplet_dataset = pd.read_csv(filepath_or_buffer = data_home + 'train_triplets.txt', sep = '\t', header = None, names = ['user', 'song', 'play_count'], nrows = 1000000)
-
+triplet_dataset = pd.read_csv(filepath_or_buffer = data_home + 'train_triplets.txt', sep = '\t', header = None, names = ['user', 'song', 'play_count'], nrows = 200000)
 
 conn = sqlite3.connect(data_home + 'track_metadata.db')
 cur = conn.cursor()
 cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
 cur.fetchall()
-
 
 track_metadata_df = pd.read_sql(con = conn, sql = 'select * from songs')
 track_metadata_df = track_metadata_df.drop_duplicates(['song_id'])
@@ -36,7 +30,6 @@ del(track_metadata_df['shs_perf'])
 del(track_metadata_df['shs_work'])
 
 triplet_dataset_merged = pd.merge(triplet_dataset, track_metadata_df, how='left', left_on='song', right_on='song_id')
-
 
 #计算每个用户听歌的总次数
 triplet_dataset_merged_res = triplet_dataset_merged[['user','play_count']].groupby('user').sum().reset_index()
@@ -132,7 +125,6 @@ def speed(id):
             res.append(test)
         rank_value += 1
     return res
-
 
 @bp.route('/music/<int:id>', methods=['GET'])
 def test(id):
