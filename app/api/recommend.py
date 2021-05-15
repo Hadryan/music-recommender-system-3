@@ -59,6 +59,12 @@ small_set = pd.merge(small_set,user_codes,how='left')
 #取出我们最终需要的数据进行转换
 mat_candidate = small_set[['us_index_value','so_index_value','fractional_play_count']]
 
+@bp.route('/music/history/<int:id>', methods=['GET'])
+def get_songs_history(id):
+    h = small_set.loc[small_set['us_index_value'] == id, ['title', 'artist_name']]
+    # df.to_json(orient="records", force_ascii=False)
+    return h.to_json(orient="records", force_ascii=False)
+
 from scipy.sparse import coo_matrix
 data_array = mat_candidate.fractional_play_count.values
 row_array = mat_candidate.us_index_value.values
@@ -114,19 +120,40 @@ uTest_recommended_items = compute_estimated_matrix(urm, U, S, Vt, uTest, K, True
 def speed(id):
     rank_value = 1
     res = []
-    for i in uTest_recommended_items[id, 0:10]:
+    dic = {}
+
+    for i in uTest_recommended_items[id, 0:60]:
         song_details = small_set[small_set.so_index_value == i].drop_duplicates('so_index_value')[['title', 'artist_name']]
         if list(song_details['title'])[0] is not None:
+            artist = list(song_details['artist_name'])[0]
             test = {
                 'recommend_id': rank_value,
                 'recommend_music': list(song_details['title'])[0],
-                'artist': list(song_details['artist_name'])[0]
+                'artist': artist
             }
             res.append(test)
+            if dic.get(artist) is not None:
+                dic[artist] += 1
+            else:
+                dic[artist] = 1
         rank_value += 1
+    ans = get_singer_songs(dic)
+    res.append({'singer_song': ans})
+    return res
+
+
+from app.api.music import get_singer
+def get_singer_songs(singer):
+    a = sorted(singer.items(), key=lambda x: x[1], reverse=True)
+    res = []
+    for i in a[0:5]:
+        response = get_singer(i[0])
+        res.append(response)
     return res
 
 @bp.route('/music/<int:id>', methods=['GET'])
 def test(id):
     res = speed(int(id))
     return jsonify(res)
+
+# @bp.route('/music/<int:id>', )

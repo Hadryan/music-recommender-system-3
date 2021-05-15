@@ -15,6 +15,7 @@ flask-migrate = "*"
 httpie = "*"
 flask-httpauth = "*"
 pyjwt = "*"
+requests = "*"
 
 [dev-packages]
 
