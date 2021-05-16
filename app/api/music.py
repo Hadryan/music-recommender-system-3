@@ -24,26 +24,6 @@ def get_popular_music():
     data = basic_get(3778678)
     return data
 
-@bp.route('/music/search', methods=['POST'])
-def get_search():
-    data = request.get_json()
-    if not data:
-        return bad_request('You must post JSON data')
-    message = {}
-    if 'type' not in data or not data.get('type', None):
-        message['type'] = 'Please provide type'
-    if 's' not in data or not data.get('s', None):
-        message['s'] = 'Please provide search string'
-    if message:
-        return bad_request(message)
-
-    s = data.get('s')
-    type = data.get('type')
-    url = 'http://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s=' + s +'&type=' + type +'&offset=0&total=true&limit=20'
-    data = requests.get(url)
-    data.encoding = 'utf-8'
-    return data.text
-
 @bp.route('/music/getSinger/<string:singer>', methods=['GET'])
 def get_singer(singer):
     url = 'http://127.0.0.1:7001/getSinger?singer=' + singer
@@ -54,3 +34,18 @@ def get_singer(singer):
 
     return res_data.get('data')
 
+@bp.route('/music/getSong/<int:id>', methods=['GET'])
+def get_song(id):
+    url = 'http://127.0.0.1:7001/getSong?id=' + str(id)
+    data = requests.get(url)
+    data.encoding = 'utf-8'
+    res_data = data.json()
+    return res_data.get('data')
+
+@bp.route('music/search/<string:s>', methods=['GET'])
+def get_search(s):
+    url = 'http://127.0.0.1:7001/search?s=' + s
+    data = requests.get(url)
+    data.encoding = 'utf-8'
+    res_data = data.json()
+    return res_data.get('data')
