@@ -45,5 +45,10 @@ def get_user(id):
     return jsonify(User.query.get_or_404(id).to_dict())
 
 @bp.route('/users/<int:id>', methods=['DELETE'])
+@token_auth.login_required
+# 方便测试使用，后续完善权限管理
 def delete_user(id):
-    pass
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    return '', 204
